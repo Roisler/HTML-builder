@@ -5,7 +5,13 @@
   "scripts": {
     "lint": "eslint .",
     "format": "prettier --write .",
-    "ci:format": "prettier --check ."
+    "ci:format": "prettier --check .",
+    "01-read-file": "01-read-file/index.js",
+    "02-write-file": "02-write-file/index.js",
+    "03-files-in-folder": "03-files-in-folder/index.js",
+    "04-copy-directory": "04-copy-directory/index.js",
+    "05-merge-styles": "05-merge-styles/index.js",
+    "06-build-page": "06-build-page/index.js"
   },
   "author": "evgeniimal",
   "license": "ISC",
