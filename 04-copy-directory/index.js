@@ -7,6 +7,16 @@ const copyFiles = async (srcDirectory, destDirectory) => {
     const destDirectoryPath = path.join(__dirname, destDirectory);
 
     await fs.mkdir(destDirectoryPath, { recursive: true });
+    const existFilesDestFirectory = await fs.readdir(destDirectoryPath);
+
+    for (const existFile of existFilesDestFirectory) {
+      fs.unlink(path.join(destDirectoryPath, existFile), (err) => {
+        if (err) {
+          console.log(err);
+        }
+      });
+    }
+
     const files = await fs.readdir(srcDirectoryPath);
 
     for (const file of files) {
