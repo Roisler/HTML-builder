@@ -1,5 +1,4 @@
 const fsp = require('fs/promises');
-//const fs = require('fs');
 const path = require('path');
 
 const directoryStylesPath = path.join(__dirname, 'styles');
