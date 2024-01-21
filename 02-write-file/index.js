@@ -1,8 +1,9 @@
 const fs = require('fs');
 const process = require('process');
 const readline = require('readline');
+const path = require('path');
 
-const writeStream = fs.createWriteStream('02-write-file');
+const writeStream = fs.createWriteStream(path.join(__dirname, '02-write-file'));
 const rl = readline.createInterface(process.stdin, process.stdout);
 
 const endWrite = () => {
