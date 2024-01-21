@@ -27,3 +27,5 @@ const mergeStyles = async (dirpath, outputFilePath) => {
 };
 
 mergeStyles(directoryStylesPath, bundleFilePath);
+
+module.exports = mergeStyles;
