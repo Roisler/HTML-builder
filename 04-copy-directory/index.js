@@ -12,7 +12,11 @@ const copyFiles = async (srcDirectory, destDirectory) => {
     for (const file of files) {
       const srcFilePath = path.join(srcDirectoryPath, file);
       const destFilePath = path.join(destDirectoryPath, file);
-      await fs.copyFile(srcFilePath, destFilePath);
+      await fs.copyFile(
+        srcFilePath,
+        destFilePath,
+        fs.constants.COPYFILE_FICLONE,
+      );
     }
   } catch (err) {
     console.log(err);
