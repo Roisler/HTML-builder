@@ -25,8 +25,28 @@ const getComponents = async (dirpath) => {
   return componentsWithContent;
 };
 
-const replaceHtml = async (template) => {
-  const newDirectoryPath = path.join(__dirname, 'project-dist');
+const mergeStyles = async (dirpath, outputFilePath) => {
+  try {
+    const stylesArray = [];
+    const files = await fsp.readdir(dirpath);
+    for (const file of files) {
+      const fileExtension = path.extname(file);
+      if (fileExtension === '.css') {
+        const filepath = path.join(dirpath, file);
+        const content = await fsp.readFile(filepath);
+        stylesArray.push(content);
+      }
+    }
+
+    await fsp.writeFile(outputFilePath, '');
+    const stylesString = stylesArray.join('\n');
+    await fsp.appendFile(outputFilePath, stylesString);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const replaceHtml = async (template, newDirectoryPath) => {
   await fsp.mkdir(newDirectoryPath, { recursive: true });
 
   const components = await getComponents(path.join(__dirname, 'components'));
@@ -51,4 +71,50 @@ const replaceHtml = async (template) => {
   await fsp.writeFile(path.join(newDirectoryPath, 'index.html'), newContent);
 };
 
-replaceHtml(path.join(__dirname, 'template.html'));
+const copyFiles = async (srcDirectory, destDirectory) => {
+  try {
+    await fsp.rm(destDirectory, { force: true, recursive: true });
+    await fsp.mkdir(destDirectory, { recursive: true });
+
+    const data = await fsp.readdir(srcDirectory);
+
+    for (const item of data) {
+      const srcItemPath = path.join(srcDirectory, item);
+      const destItemPath = path.join(destDirectory, item);
+      fs.stat(srcItemPath, { withFileTypes: true }, async (err, stats) => {
+        if (err) {
+          throw err;
+        }
+        if (stats.isDirectory()) {
+          copyFiles(srcItemPath, destItemPath);
+        } else {
+          await fsp.copyFile(
+            srcItemPath,
+            destItemPath,
+            fsp.constants.COPYFILE_FICLONE,
+          );
+        }
+      });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const buildPage = async (template, outputDir) => {
+  await copyFiles(
+    path.join(__dirname, 'assets'),
+    path.join(__dirname, outputDir, 'assets'),
+  );
+
+  await mergeStyles(
+    path.join(__dirname, 'styles'),
+    path.join(__dirname, outputDir, 'style.css'),
+  );
+
+  await replaceHtml(template, path.join(__dirname, outputDir));
+};
+
+const templatePath = path.join(__dirname, 'template.html');
+
+buildPage(templatePath, 'project-dist');
