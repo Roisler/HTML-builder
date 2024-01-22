@@ -13,22 +13,24 @@ const getFilesOfDirectory = async (dirpath) => {
       const fileBaseName = path.basename(file.name, fileExtension);
       stat(filePath, (err, stats) => {
         if (err) {
-          throw new Error('Error');
+          throw err;
         }
-        const { size } = stats;
-        const delimiter = '-';
-        console.log(
-          fileBaseName,
-          delimiter,
-          fileExtension.slice(1),
-          delimiter,
-          size,
-          'bytes',
-        );
+        if (stats.isFile()) {
+          const { size } = stats;
+          const delimiter = '-';
+          console.log(
+            fileBaseName,
+            delimiter,
+            fileExtension.slice(1),
+            delimiter,
+            size,
+            'bytes',
+          );
+        }
       });
     }
   } catch (err) {
-    console.error(err);
+    console.log(err);
   }
 };
 
