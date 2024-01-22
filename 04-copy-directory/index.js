@@ -6,16 +6,8 @@ const copyFiles = async (srcDirectory, destDirectory) => {
     const srcDirectoryPath = path.join(__dirname, srcDirectory);
     const destDirectoryPath = path.join(__dirname, destDirectory);
 
+    await fsp.rm(destDirectoryPath, { force: true, recursive: true });
     await fsp.mkdir(destDirectoryPath, { recursive: true });
-    const existFilesDestFirectory = await fsp.readdir(destDirectoryPath);
-
-    for (const existFile of existFilesDestFirectory) {
-      fsp.unlink(path.join(destDirectoryPath, existFile), (err) => {
-        if (err) {
-          console.log(err);
-        }
-      });
-    }
 
     const files = await fsp.readdir(srcDirectoryPath);
 
