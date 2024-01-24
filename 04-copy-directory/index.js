@@ -9,16 +9,17 @@ const copyFiles = async (srcDirectory, destDirectory) => {
     await fsp.rm(destDirectoryPath, { force: true, recursive: true });
     await fsp.mkdir(destDirectoryPath, { recursive: true });
 
-    const files = await fsp.readdir(srcDirectoryPath);
-
+    const files = await fsp.readdir(srcDirectoryPath, { withFileTypes: true });
     for (const file of files) {
-      const srcFilePath = path.join(srcDirectoryPath, file);
-      const destFilePath = path.join(destDirectoryPath, file);
-      await fsp.copyFile(
-        srcFilePath,
-        destFilePath,
-        fsp.constants.COPYFILE_FICLONE,
-      );
+      const srcFilePath = path.join(srcDirectoryPath, file.name);
+      const destFilePath = path.join(destDirectoryPath, file.name);
+      if (file.isFile()) {
+        await fsp.copyFile(
+          srcFilePath,
+          destFilePath,
+          fsp.constants.COPYFILE_FICLONE,
+        );
+      }
     }
   } catch (err) {
     console.log(err);
